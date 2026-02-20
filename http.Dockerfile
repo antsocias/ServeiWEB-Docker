@@ -1,27 +1,21 @@
-## Seleccionam la imatge base
 FROM ubuntu:24.04
-
-# Evitem interaccions manuals durant la instal·lació
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Actualitzam, instal·lam Apache2 i netejam els paquets descarregats
 RUN apt-get update -y && \
     apt-get install apache2 -y && \
     apt-get clean
 
-# Copiam el nostre arxiu de configuració al directori sites-available d'Apache
-COPY viralupcom.conf /etc/apache2/sites-available/viralupcom.conf
+RUN mkdir -p /var/www/viralup/logs \
+             /srv/www/viralup/imatges
 
-# Creem la carpeta on anirà la web i donam els permisos a l'usuari d'Apache (www-data)
-RUN mkdir -p /var/www/viralupcom && \
-    chown -R www-data:www-data /var/www/viralupcom
+RUN chown -R www-data:www-data /var/www/viralup \
+                             /srv/www/viralup
 
-# Desactivam el lloc web per defecte i activam el nostre
+COPY viralup.conf /etc/apache2/sites-available/viralup.conf
+
 RUN a2dissite 000-default.conf && \
-    a2ensite viralupcom.conf
+    a2ensite viralup.conf && \
+    a2enmod rewrite
 
-# Exposam el port 80 (HTTP)
-EXPOSE 80/tcp
-
-# Comanda principal per arrencar Apache en primer pla
+EXPOSE 80
 CMD ["apachectl", "-D", "FOREGROUND"]

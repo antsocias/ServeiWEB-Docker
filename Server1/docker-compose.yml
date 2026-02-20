@@ -5,6 +5,17 @@ services:
       dockerfile: http.Dockerfile
     container_name: web-dck-viralupcom
     ports:
-      - "8080:80" # El port 8080 del teu PC es connectarà al 80 del contenidor
+      - "8080:80"
     volumes:
-      - ../html:/var/www/html # Vincula la carpeta "html" de l'arrel al servidor web
+      - ../html:/var/www/viralup
+      - ../imatges:/srv/www/viralup/imatges
+    networks:
+      web_subnet:
+        ipv4_address: 172.16.21.10
+
+networks:
+  web_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.21.0/27
