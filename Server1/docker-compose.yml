@@ -1,0 +1,10 @@
+services:
+  web-viralupcom:
+    build:
+      context: ..
+      dockerfile: http.Dockerfile
+    container_name: web-dck-viralupcom
+    ports:
+      - "8080:80" # El port 8080 del teu PC es connectarà al 80 del contenidor
+    volumes:
+      - ../html:/var/www/html # Vincula la carpeta "html" de l'arrel al servidor web
